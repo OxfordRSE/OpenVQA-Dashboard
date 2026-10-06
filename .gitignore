@@ -1,0 +1,13 @@
+# R
+.Rhistory
+.Rapp.history
+.RData
+.Ruserdata
+
+# R package build artifacts
+/openvqadashboard_*.tar.gz
+/openvqadashboard.Rcheck/
+
+# MacOS
+__MACOSX/
+.DS_Store

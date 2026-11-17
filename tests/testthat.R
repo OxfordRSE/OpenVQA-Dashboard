@@ -1,4 +1,4 @@
 library(testthat)
 library(openvqadashboard)
 
-test_check("openvqadashboard")
+testthat::test_check("openvqadashboard")

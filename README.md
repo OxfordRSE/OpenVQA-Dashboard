@@ -120,6 +120,7 @@ untouched.
 
 - `R/app_ui.R`: page layout, controls and result panels.
 - `R/app_server.R`: reactive logic connecting controls to OpenVQA functions.
+- `R/app_config.R`: configuration loading, merging and validation.
 - `R/run_app.R`: exported application launcher.
 - `dev/run_dev.R`: local development entry point.
 - `rproject.toml` and `rv.lock`: project dependencies managed by rv.

@@ -4,7 +4,8 @@
 
 This repository contains the `openvqadashboard` R package: a Shiny interface
 with bslib layouts and a golem launcher. Edit `R/app_ui.R` for the interface,
-`R/app_server.R` for reactive logic, and `R/run_app.R` for application startup.
+`R/app_server.R` for reactive logic, `R/app_config.R` for configuration loading
+and validation, and `R/run_app.R` for application startup.
 `dev/run_dev.R` launches the source files during development. Package metadata
 lives in `DESCRIPTION` and `NAMESPACE`; exported function documentation lives
 in `man/`. Tests live in `tests/testthat/`.

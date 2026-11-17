@@ -1,11 +1,16 @@
 Package: openvqadashboard
 Title: Shiny Dashboard for OpenVQA
 Version: 0.0.0.9000
-Authors@R: person("James", role = "aut")
+Authors@R: person("James Briant", role = "aut")
 Description: A Shiny interface for configuring OpenVQA analyses and exploring
     their results.
 Encoding: UTF-8
 Imports:
     bslib,
+    config,
     golem,
     shiny
+Suggests:
+    testthat (>= 3.0.0),
+    withr
+Config/testthat/edition: 3

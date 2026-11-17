@@ -5,3 +5,5 @@
 ^dev$
 ^AGENTS\.md$
 ^README\.md$
+^config\.yaml$
+^config-template\.yaml$

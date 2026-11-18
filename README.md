@@ -116,6 +116,20 @@ Rscript -e 'testthat::test_local()'
 The configuration tests use temporary files and leave your local settings
 untouched.
 
+GitHub Actions runs this suite on Ubuntu 24.04, macOS 26 and Windows 2025 for
+pull requests, pushes to `main` and manual runs. The reusable setup action in
+`.github/actions/setup-r-environment/action.yml` installs R 4.5.2 and rv 0.22.2,
+then runs `rv sync --locked` against the root project. Commit dependency and
+lockfile changes together; CI fails if synchronization would change the lock.
+
+Package libraries are cached separately by runner image, OS, architecture,
+tool versions and the hashes of `rproject.toml` and `rv.lock`. Each job starts
+with its own runner and still synchronizes dependencies after restoring a
+cache. The repository's `.Rprofile` activates the root rv library for the R
+test step; CI checks that this is R's first library before running the suite.
+Tests load the package from source, so CI needs neither a local
+`config.yaml` nor an OpenVQA installation.
+
 ## Where to develop
 
 - `R/app_ui.R`: page layout, controls and result panels.

@@ -15,7 +15,10 @@ testthat::test_that("configuration is read from config.yaml from the working dir
   withr::local_dir(directory)
   testthat::expect_equal(read_app_config()$shiny$port, 8000)
   unlink("config.yaml")
-  testthat::expect_error(read_app_config(), "Copy config-template.yaml to config.yaml", fixed = TRUE)
+  testthat::expect_error(
+    read_app_config(), "Copy config-template.yaml to config.yaml",
+    fixed = TRUE
+  )
 })
 
 testthat::test_that("named profiles inherit shared settings", {
@@ -50,11 +53,15 @@ testthat::test_that("user fields override shared defaults without replacing sibl
 
 testthat::test_that("explicit files and launch options are respected", {
   path <- local_config_file()
-  settings <- read_app_config(config_file = path, options = list(port = 8124, launch.browser = FALSE))
+  settings <- read_app_config(
+    config_file = path, options = list(port = 8124, launch.browser = FALSE)
+  )
   testthat::expect_equal(settings$shiny$port, 8124)
   testthat::expect_false(settings$shiny$launch.browser)
   testthat::expect_null(read_app_config(config_file = path, options = list(port = NULL))$shiny$port)
-  testthat::expect_error(read_app_config(config_file = paste0(path, ".missing")), "Settings file not found")
+  testthat::expect_error(
+    read_app_config(config_file = paste0(path, ".missing")), "Settings file not found"
+  )
 })
 
 testthat::test_that("YAML can request an automatic port", {
@@ -68,9 +75,13 @@ testthat::test_that("YAML can request an automatic port", {
 testthat::test_that("invalid settings are rejected", {
   path <- local_config_file()
   for (port in list(0, 65536, 8000.5, "8000", NA_real_)) {
-    testthat::expect_error(read_app_config(config_file = path, options = list(port = port)), "Shiny port")
+    testthat::expect_error(
+      read_app_config(config_file = path, options = list(port = port)), "Shiny port"
+    )
   }
-  testthat::expect_error(read_app_config(config_file = path, options = list(host = "")), "Shiny host")
+  testthat::expect_error(
+    read_app_config(config_file = path, options = list(host = "")), "Shiny host"
+  )
   writeLines(c("default:", "  shiny: false"), path)
   testthat::expect_error(read_app_config(config_file = path), "shiny.*section")
   writeLines(c(
@@ -79,5 +90,7 @@ testthat::test_that("invalid settings are rejected", {
   ), path)
   testthat::expect_error(read_app_config(config_file = path), "OpenVQA directory")
   writeLines(c("shiny:", "  port: 8000"), path)
-  testthat::expect_error(read_app_config(config_file = path), "must provide a default configuration")
+  testthat::expect_error(
+    read_app_config(config_file = path), "must provide a default configuration"
+  )
 })

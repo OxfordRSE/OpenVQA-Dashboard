@@ -14,6 +14,26 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  style:
+    name: R style and lint
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up R environment
+        uses: ./.github/actions/setup-r-environment
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Install pre-commit
+        run: python -m pip install pre-commit
+
+      - name: Check R style and lint
+        run: pre-commit run --all-files --show-diff-on-failure
+
   tests:
     name: Tests (${{ matrix.os }})
     runs-on: ${{ matrix.os }}

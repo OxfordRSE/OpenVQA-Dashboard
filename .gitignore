@@ -7,9 +7,6 @@
 # Local dashboard settings
 /config.yaml
 
-# rv
-rv.lock
-
 # R package build artifacts
 /openvqadashboard_*.tar.gz
 /openvqadashboard.Rcheck/

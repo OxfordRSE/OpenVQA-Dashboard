@@ -21,4 +21,7 @@ dependencies = [
     "config",
     "testthat",
     "withr",
+    "styler",
+    "lintr",
+    "pkgload",
 ]

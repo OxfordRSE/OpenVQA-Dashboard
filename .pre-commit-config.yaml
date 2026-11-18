@@ -1,0 +1,17 @@
+repos:
+  - repo: local
+    hooks:
+      - id: styler
+        name: Style R files
+        language: system
+        entry: >-
+          Rscript -e 'result <- styler::style_file(commandArgs(trailingOnly = TRUE)); stopifnot(!anyNA(result$changed))'
+        files: '(\.[Rr]$|(^|/)\.Rprofile$)'
+        exclude: '^rv/'
+      - id: lintr
+        name: Lint R files
+        language: system
+        entry: >-
+          Rscript -e 'pkgload::load_all(quiet = TRUE, helpers = FALSE); lints <- lapply(commandArgs(trailingOnly = TRUE), lintr::lint); invisible(lapply(lints, print)); stopifnot(all(lengths(lints) == 0L))'
+        files: '(\.[Rr]$|(^|/)\.Rprofile$)'
+        exclude: '^rv/'

@@ -20,6 +20,9 @@ in `man/`. Tests live in `tests/testthat/`.
 - `source("dev/run_dev.R")`: launch from an R console in this directory.
 - `rv add <package>`: add a dependency and update the rv lock file.
 - `Rscript -e 'testthat::test_local()'`: run the testthat suite from source.
+- `pre-commit install`: enable the local Git hook after installing pre-commit
+  and running `rv sync`.
+- `pre-commit run --all-files`: format and lint maintained R files.
 
 Declare runtime dependencies in `DESCRIPTION` as well as rv configuration.
 Complete maintainer and license metadata before distributing the package.
@@ -29,7 +32,10 @@ Complete maintainer and license metadata before distributing the package.
 Use two-space indentation, `<-` for assignment, and `snake_case` for functions
 and files. Keep scientific computation in OpenVQA and use the dashboard to
 collect inputs, invoke analyses, and display results. Add modules when a
-section needs independent state or reuse. No formatter is configured.
+section needs independent state or reuse. Use styler's default tidyverse style
+and lintr's checks with a 100-character line limit through pre-commit. Styler
+owns indentation; lintr's indentation check is disabled to avoid conflicting
+rules. Generated files under `rv/` are excluded.
 
 ### Package namespaces
 

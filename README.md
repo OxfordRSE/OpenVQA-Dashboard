@@ -105,6 +105,37 @@ checked or executed. Scientific analysis settings remain in OpenVQA's
 `params.yaml` files. For a hosted dashboard, the server administrator supplies
 the configuration; browser users do not need their own OpenVQA installation.
 
+## Style and lint
+
+R source is formatted with styler's default tidyverse style. Styler formats
+the source of this golem application and does not change its package namespace
+conventions. Lintr uses its default checks with a 100-character line limit;
+its indentation check is disabled so styler controls indentation consistently.
+Both tools work with golem; neither replaces the
+functional tests.
+
+After `rv sync`, install the [pre-commit framework](https://pre-commit.com/#installation)
+if needed, then enable the hook once per clone:
+
+```sh
+pre-commit install
+```
+
+The hooks format and lint staged `.R`, `.r` and `.Rprofile` files using the
+versions in `rv.lock`. They use the project's R environment; generated `rv/`
+files are excluded. If formatting changes files, review and stage those
+changes, then commit again. Lint findings need manual fixes. To run both hooks
+over all tracked R files:
+
+```sh
+pre-commit run --all-files
+```
+
+A separate Ubuntu CI job runs the same hooks over all tracked R files. It
+fails on formatting changes or lint findings and shows formatting diffs.
+This also checks contributions made without the local hooks installed.
+The rules are configured in `.pre-commit-config.yaml` and `.lintr`.
+
 ## Tests
 
 Tests use testthat. From the repository root, run:

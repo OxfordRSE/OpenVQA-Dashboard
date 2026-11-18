@@ -8,3 +8,5 @@
 ^config\.yaml$
 ^config-template\.yaml$
 ^\.github$
+^\.pre-commit-config\.yaml$
+^\.lintr$

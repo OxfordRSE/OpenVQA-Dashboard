@@ -29,6 +29,8 @@ app_server <- function(input, output, session) {
     path <- golem::get_golem_options("projects_dir")
     if (is.null(path)) "Not configured" else path
   })
+  # Keep the grid independent of selection so clicking does not replace the focused button.
+  output$project_cards <- shiny::renderUI(project_cards(catalogue()$projects))
 
   # These reactives form the server boundary for project and assessment controls.
   selected_project <- shiny::reactive({

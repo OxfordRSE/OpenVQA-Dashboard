@@ -2,5 +2,6 @@
 source("R/app_ui.R", local = TRUE)
 source("R/app_server.R", local = TRUE)
 source("R/app_config.R", local = TRUE)
+source("R/local_projects.R", local = TRUE)
 source("R/run_app.R", local = TRUE)
 print(run_app())

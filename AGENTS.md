@@ -37,6 +37,19 @@ and lintr's checks with a 100-character line limit through pre-commit. Styler
 owns indentation; lintr's indentation check is disabled to avoid conflicting
 rules. Generated files under `rv/` are excluded.
 
+### Comments and function documentation
+
+- Add concise comments to new or changed code where the reason for a decision
+  is not obvious, especially in longer functions and files. Explain why a
+  constraint, validation check or unusual approach is needed, rather than
+  restating the code. Keep comments accurate when behaviour changes.
+- Add roxygen-style (`#'`) function docstrings where they help a caller or
+  maintainer understand the contract. Describe purpose, arguments, return
+  values and important side effects or failure behaviour for exported functions
+  and non-trivial internal helpers. Use `@noRd` for internal documentation;
+  keep exported documentation in `man/` consistent. Trivial helpers and named
+  test cases do not need boilerplate documentation.
+
 ### Package namespaces
 
 - Use `package::function()` for dependency functions in application code,

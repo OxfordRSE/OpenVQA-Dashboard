@@ -134,11 +134,19 @@ hidden and backup folders. Symlinks that lead outside the collection are
 excluded. Server selections accept catalogue IDs, recheck selected directories
 and reject paths outside the collection.
 
-The welcome page currently reports setup instructions, unavailable paths, an
-empty collection, or the discovered project count. Unreadable collection
-directories produce an unavailable status rather than an empty result. After
-changing settings or project folders, reload the app (restart after editing
-settings). Project cards and assessment navigation are planned for later phases.
+The homepage shows projects as square bslib cards in a responsive grid. Each card
+uses the folder name and assessment count; long names wrap. Select a card by
+clicking it or using Tab followed by Enter or Space. Selection is confirmed above
+the grid and belongs to the current browser session. Assessment navigation is
+planned for phase 3.
+
+The sidebar shows the configured local collection path, R and dashboard versions,
+and backend connectivity/version information. Setup instructions, unavailable
+paths and empty collections are reported separately from a successful list.
+Unreadable collection directories produce an unavailable status rather than an
+empty result. After changing settings or project folders, reload the app (restart
+after editing settings). Validation and analysis indicators are deferred until
+those operations are implemented; card selection only selects the project.
 Listing does not write to the backend or project data, validate scientific
 inputs, or run analyses. Scientific settings remain in OpenVQA's `params.yaml`.
 For a hosted dashboard, the server administrator supplies the configuration.

@@ -2,8 +2,33 @@ app_server <- function(input, output, session) {
   # Keep each session's catalogue stable so its IDs cannot shift during selection.
   backend <- shiny::reactive(local_backend_status(golem::get_golem_options("openvqa_dir")))
   catalogue <- shiny::reactive(discover_projects(golem::get_golem_options("projects_dir")))
-  output$backend_status <- shiny::renderText(backend()$message)
+  output$backend_status <- shiny::renderUI({
+    status <- backend()
+    connected <- status$status == "ok"
+    # Pair the decorative dot with text so colour is not the only indication of status.
+    shiny::tags$div(
+      role = "status",
+      shiny::tags$span(
+        title = status$message,
+        if (connected) {
+          paste0("OpenVQA: v", status$version, " - connected")
+        } else {
+          "OpenVQA: unavailable - disconnected"
+        },
+        " ",
+        shiny::tags$span(
+          class = if (connected) "text-success" else "text-danger",
+          `aria-hidden` = "true", "\u25cf"
+        )
+      ),
+      if (!connected) shiny::p(status$message, class = "small mt-1 mb-0")
+    )
+  })
   output$projects_status <- shiny::renderText(catalogue()$message)
+  output$projects_source <- shiny::renderText({
+    path <- golem::get_golem_options("projects_dir")
+    if (is.null(path)) "Not configured" else path
+  })
 
   # These reactives form the server boundary for project and assessment controls.
   selected_project <- shiny::reactive({

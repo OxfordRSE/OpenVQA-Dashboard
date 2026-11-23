@@ -3,8 +3,10 @@ testthat::test_that("server status and selection validation use configured catal
   backend_path <- local_backend()
   shiny::testServer(app_server, {
     shiny::shinyOptions(golem_options = list(openvqa_dir = backend_path, projects_dir = root))
-    testthat::expect_match(output$backend_status, "OpenVQA 0.1.0 connected", fixed = TRUE)
+    testthat::expect_match(output$backend_status$html, "OpenVQA: v0.1.0 - connected", fixed = TRUE)
+    testthat::expect_match(output$backend_status$html, "text-success", fixed = TRUE)
     testthat::expect_match(output$projects_status, "2 project(s) discovered", fixed = TRUE)
+    testthat::expect_equal(output$projects_source, root)
     testthat::expect_null(selected_project())
     testthat::expect_null(selected_assessment())
     session$setInputs(project_id = "project_1", assessment_id = "assessment_2")
@@ -20,8 +22,10 @@ testthat::test_that("server status and selection validation use configured catal
 testthat::test_that("server reports setup, empty and unavailable collections", {
   shiny::testServer(app_server, {
     shiny::shinyOptions(golem_options = list())
-    testthat::expect_match(output$backend_status, "Set openvqa_dir")
+    testthat::expect_match(output$backend_status$html, "Set openvqa_dir")
+    testthat::expect_match(output$backend_status$html, "text-danger", fixed = TRUE)
     testthat::expect_match(output$projects_status, "Set projects_dir")
+    testthat::expect_equal(output$projects_source, "Not configured")
   })
   root <- withr::local_tempdir()
   shiny::testServer(app_server, {
@@ -29,7 +33,14 @@ testthat::test_that("server reports setup, empty and unavailable collections", {
     testthat::expect_match(output$projects_status, "No projects found")
   })
   shiny::testServer(app_server, {
-    shiny::shinyOptions(golem_options = list(projects_dir = file.path(root, "missing")))
+    shiny::shinyOptions(golem_options = list(
+      projects_dir = file.path(root, "missing"), openvqa_dir = file.path(root, "missing")
+    ))
+    testthat::expect_match(output$backend_status$html, "OpenVQA: unavailable - disconnected",
+      fixed = TRUE
+    )
+    testthat::expect_match(output$backend_status$html, "text-danger", fixed = TRUE)
+    testthat::expect_match(output$backend_status$html, "missing or unreadable", fixed = TRUE)
     testthat::expect_match(output$projects_status, "Projects unavailable")
   })
 })

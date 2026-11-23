@@ -1,12 +1,15 @@
 # Copy this file to config.yaml and edit your installation paths.
 # Profiles inherit from default; select one with R_CONFIG_ACTIVE.
 default:
-  # Set your OpenVQA path, or leave null while developing the interface.
+  # Relative paths resolve from this settings file's directory.
   openvqa_dir: null
+  projects_dir: null
 
 # Example installation paths: replace these for your machine or server.
 development:
   openvqa_dir: "../OpenVQA"
+  projects_dir: "../OpenVQA/data"
 
 production:
   openvqa_dir: "/opt/OpenVQA"
+  projects_dir: "/srv/openvqa-projects"

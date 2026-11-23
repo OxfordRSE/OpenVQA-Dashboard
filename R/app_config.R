@@ -1,3 +1,11 @@
+#' Merge application defaults, the selected user profile and launch overrides.
+#'
+#' @param config_file Required user YAML file; R_CONFIG_ACTIVE selects its profile.
+#' @param options Shiny launch options that override the merged shiny section.
+#' @return Validated settings with installation paths relative to the config file
+#'   expanded to absolute paths. Stops on missing configuration or malformed settings;
+#'   directory availability is checked separately so the app can show setup status.
+#' @noRd
 read_app_config <- function(config_file = "config.yaml", options = list()) {
   if (!file.exists(config_file)) {
     stop(
@@ -28,10 +36,21 @@ read_app_config <- function(config_file = "config.yaml", options = list()) {
       options$port != floor(options$port))) {
     stop("Shiny port must be an integer from 1 to 65535, or null.", call. = FALSE)
   }
-  if (!is.null(settings$openvqa_dir) &&
-    (!is.character(settings$openvqa_dir) || length(settings$openvqa_dir) != 1L ||
-      is.na(settings$openvqa_dir) || !nzchar(settings$openvqa_dir))) {
-    stop("OpenVQA directory must be a non-empty string, or null.", call. = FALSE)
+  # Anchor paths to the selected file so launching from another directory is predictable.
+  config_dir <- dirname(normalizePath(config_file, winslash = "/", mustWork = TRUE))
+  for (field in c("openvqa_dir", "projects_dir")) {
+    path <- settings[[field]]
+    if (is.null(path)) {
+      next
+    }
+    if (!is.character(path) || length(path) != 1L || is.na(path) || !nzchar(trimws(path))) {
+      stop(field, " must be a non-empty string, or null.", call. = FALSE)
+    }
+    path <- path.expand(path)
+    if (!grepl("^(/|[A-Za-z]:[/\\\\]|\\\\\\\\)", path)) {
+      path <- file.path(config_dir, path)
+    }
+    settings[[field]] <- path
   }
 
   settings$shiny <- options

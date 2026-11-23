@@ -5,6 +5,7 @@ testthat::test_that("user settings inherit bundled application defaults", {
   testthat::expect_equal(settings$shiny$port, 8000)
   testthat::expect_equal(settings$shiny$host, "127.0.0.1")
   testthat::expect_null(settings$openvqa_dir)
+  testthat::expect_null(settings$projects_dir)
   testthat::expect_equal(readLines(path), original)
 })
 
@@ -24,15 +25,17 @@ testthat::test_that("configuration is read from config.yaml from the working dir
 testthat::test_that("named profiles inherit shared settings", {
   path <- local_config_file()
   writeLines(c(
-    "default:", "  openvqa_dir: '/local/OpenVQA'",
-    "development:", "  openvqa_dir: '../OpenVQA'",
+    "default:", "  openvqa_dir: '/local/OpenVQA'", "  projects_dir: null",
+    "development:", "  openvqa_dir: '../OpenVQA'", "  projects_dir: '../OpenVQA/data'",
     "production:", "  openvqa_dir: '/opt/OpenVQA'"
   ), path)
   withr::local_envvar(R_CONFIG_ACTIVE = "development")
   settings <- read_app_config(config_file = path)
   testthat::expect_equal(settings$shiny$port, 8000)
   testthat::expect_equal(settings$shiny$host, "127.0.0.1")
-  testthat::expect_equal(settings$openvqa_dir, "../OpenVQA")
+  config_dir <- dirname(normalizePath(path, winslash = "/"))
+  testthat::expect_equal(settings$openvqa_dir, file.path(config_dir, "../OpenVQA"))
+  testthat::expect_equal(settings$projects_dir, file.path(config_dir, "../OpenVQA/data"))
   withr::local_envvar(R_CONFIG_ACTIVE = "production")
   testthat::expect_equal(
     read_app_config(config_file = path)$openvqa_dir,
@@ -88,9 +91,51 @@ testthat::test_that("invalid settings are rejected", {
     "default:", "  shiny:", "    host: '127.0.0.1'", "    port: 8000",
     "  openvqa_dir: false"
   ), path)
-  testthat::expect_error(read_app_config(config_file = path), "OpenVQA directory")
+  testthat::expect_error(read_app_config(config_file = path), "openvqa_dir")
   writeLines(c("shiny:", "  port: 8000"), path)
   testthat::expect_error(
     read_app_config(config_file = path), "must provide a default configuration"
   )
+})
+
+testthat::test_that("installation paths resolve from the config file without changing cwd", {
+  config_dir <- withr::local_tempdir()
+  working_dir <- withr::local_tempdir()
+  path <- file.path(config_dir, "settings.yaml")
+  writeLines(c(
+    "default:", "  openvqa_dir: 'backend checkout'", "  projects_dir: 'project data'"
+  ), path)
+  withr::local_dir(working_dir)
+  before <- getwd()
+  settings <- read_app_config(config_file = path)
+  config_dir <- normalizePath(config_dir, winslash = "/")
+  testthat::expect_equal(settings$openvqa_dir, file.path(config_dir, "backend checkout"))
+  testthat::expect_equal(settings$projects_dir, file.path(config_dir, "project data"))
+  testthat::expect_equal(getwd(), before)
+})
+
+testthat::test_that("both installation settings reject malformed values", {
+  path <- local_config_file()
+  for (field in c("openvqa_dir", "projects_dir")) {
+    for (value in c("false", "42", "''", "'   '", "[one, two]", ".na")) {
+      writeLines(c("default:", paste0("  ", field, ": ", value)), path)
+      testthat::expect_error(read_app_config(config_file = path), field)
+    }
+  }
+})
+
+testthat::test_that("absolute paths, home expansion and profile null overrides are respected", {
+  path <- local_config_file()
+  absolute <- normalizePath(dirname(path), winslash = "/")
+  writeLines(c(
+    "default:", paste0("  projects_dir: '", absolute, "'"), "  openvqa_dir: '~/OpenVQA'",
+    "development:", "  projects_dir: null", "  openvqa_dir: null"
+  ), path)
+  settings <- read_app_config(config_file = path)
+  testthat::expect_equal(settings$projects_dir, absolute)
+  testthat::expect_equal(settings$openvqa_dir, path.expand("~/OpenVQA"))
+  withr::local_envvar(R_CONFIG_ACTIVE = "development")
+  settings <- read_app_config(config_file = path)
+  testthat::expect_null(settings$projects_dir)
+  testthat::expect_null(settings$openvqa_dir)
 })

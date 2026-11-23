@@ -32,15 +32,41 @@ app_server <- function(input, output, session) {
   # Keep the grid independent of selection so clicking does not replace the focused button.
   output$project_cards <- shiny::renderUI(project_cards(catalogue()$projects))
 
-  # These reactives form the server boundary for project and assessment controls.
+  selected_project_id <- shiny::reactiveVal(NULL)
+  # Register only catalogue-owned button IDs; observers are cleaned up with the session.
+  shiny::observe({
+    lapply(names(catalogue()$projects), function(id) {
+      shiny::observeEvent(input[[id]], {
+        selected_project_id(id)
+      })
+    })
+  })
+
   selected_project <- shiny::reactive({
-    resolve_catalogue_selection(catalogue(), input$project_id)
+    id <- selected_project_id()
+    # Depend on the click counter to recheck disk changes even when the same card is clicked again.
+    if (!is.null(id)) {
+      input[[id]]
+    }
+    resolve_catalogue_selection(catalogue(), id)
   })
   selected_assessment <- shiny::reactive({
     if (is.null(input$assessment_id)) {
       return(NULL)
     }
-    resolve_catalogue_selection(catalogue(), input$project_id, input$assessment_id)
+    resolve_catalogue_selection(catalogue(), selected_project_id(), input$assessment_id)
+  })
+  output$selection_status <- shiny::renderText({
+    if (catalogue()$status != "ok") {
+      return(NULL)
+    }
+    tryCatch(
+      {
+        project <- selected_project()
+        if (is.null(project)) "Select a project." else paste("Selected project:", project$name)
+      },
+      error = function(error) conditionMessage(error)
+    )
   })
   invisible(list(project = selected_project, assessment = selected_assessment))
 }

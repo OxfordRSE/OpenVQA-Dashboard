@@ -39,6 +39,10 @@ app_ui <- function(request) {
       bslib::card_body(
         fillable = FALSE,
         shiny::tags$div(role = "status", shiny::textOutput("projects_status")),
+        shiny::tags$div(
+          role = "status", class = "text-body-secondary small mb-3",
+          shiny::textOutput("selection_status")
+        ),
         shiny::uiOutput("project_cards")
       )
     )

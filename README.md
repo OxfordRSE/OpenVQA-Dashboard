@@ -43,17 +43,28 @@ The user template contains the settings that vary between installations:
 ```yaml
 default:
   openvqa_dir: null
+  projects_dir: null
 
 development:
   openvqa_dir: "../OpenVQA"
+  projects_dir: "../OpenVQA/data"
 
 production:
   openvqa_dir: "/opt/OpenVQA"
+  projects_dir: "/srv/openvqa-projects"
 ```
 
-Replace the example paths with your own; prefer absolute paths when configuring
-OpenVQA. Leave `openvqa_dir: null` while developing the interface without OpenVQA.
-Keep the template and copy it rather than renaming it.
+Replace the example paths with your own. `openvqa_dir` identifies the separately
+installed backend code; `projects_dir` identifies the collection of project
+folders. They can live independently. Leave either setting null to see setup
+instructions while developing the interface. Keep the template and copy it
+rather than renaming it.
+
+Relative installation paths resolve against the selected settings file's
+directory, including when `config_file` points outside this repository. For
+example, `../OpenVQA/data` in the dashboard root's `config.yaml` selects the
+neighbouring checkout's data collection. Absolute paths and `~` are supported.
+The dashboard does not change the process working directory to resolve paths.
 
 At startup, the dashboard loads `inst/default-config.yaml`, resolves the selected
 profile from `config.yaml`, then merges the user values into the shared defaults.
@@ -99,11 +110,38 @@ using the user example above or the root template from the source repository.
 Explicit launch options, such as `run_app(options = list(port = 8001))`, take
 precedence over the user file and shared defaults.
 
-OpenVQA remains a separate installation with its own `rv sync`. Its directory
-is stored in the app's golem options for the analysis runner; it is not yet
-checked or executed. Scientific analysis settings remain in OpenVQA's
-`params.yaml` files. For a hosted dashboard, the server administrator supplies
-the configuration; browser users do not need their own OpenVQA installation.
+OpenVQA remains a separate installation with its own `rv sync`. The dashboard
+checks that its directory is readable and contains readable `validate.R`,
+`analyse.R` and `VERSION` files, then displays the version read from `VERSION`.
+This checks filesystem connectivity only; backend dependencies and analysis
+readiness are not checked. No backend R code is loaded or executed.
+
+Project discovery reads the following structure:
+
+```text
+projects_dir/
+  project_name/
+    params.yaml          # Optional
+    assessment_name/
+      inputs/            # Required for discovery; files are not validated
+```
+
+Only immediate project folders containing at least one immediate assessment
+with an `inputs/` directory qualify. Results, figures and logs are optional.
+Unrelated files and folders are ignored; discovery does not search deeper.
+Folder names supply the labels, sorted deterministically, including matching
+hidden and backup folders. Symlinks that lead outside the collection are
+excluded. Server selections accept catalogue IDs, recheck selected directories
+and reject paths outside the collection.
+
+The welcome page currently reports setup instructions, unavailable paths, an
+empty collection, or the discovered project count. Unreadable collection
+directories produce an unavailable status rather than an empty result. After
+changing settings or project folders, reload the app (restart after editing
+settings). Project cards and assessment navigation are planned for later phases.
+Listing does not write to the backend or project data, validate scientific
+inputs, or run analyses. Scientific settings remain in OpenVQA's `params.yaml`.
+For a hosted dashboard, the server administrator supplies the configuration.
 
 ## Style and lint
 
@@ -166,6 +204,7 @@ Tests load the package from source, so CI needs neither a local
 - `R/app_ui.R`: page layout, controls and result panels.
 - `R/app_server.R`: reactive logic connecting controls to OpenVQA functions.
 - `R/app_config.R`: configuration loading, merging and validation.
+- `R/local_projects.R`: read-only backend checks, discovery and selection validation.
 - `R/run_app.R`: exported application launcher.
 - `dev/run_dev.R`: local development entry point.
 - `rproject.toml` and `rv.lock`: project dependencies managed by rv.

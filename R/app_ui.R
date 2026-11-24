@@ -1,4 +1,4 @@
-app_ui <- function(request) {
+app_ui <- function(request, theme_file = NULL) {
   # The development launcher sources files directly, without installing the package.
   description <- system.file("DESCRIPTION", package = "openvqadashboard")
   if (!nzchar(description)) {
@@ -6,8 +6,13 @@ app_ui <- function(request) {
   }
   dashboard_version <- read.dcf(description, fields = "Version")[[1]]
 
+  # Explicit selection prevents an unrelated ancestor brand from affecting the app.
+  brand <- if (is.null(theme_file)) FALSE else theme_file
+  theme <- bslib::bs_theme(brand = brand)
+
   bslib::page_sidebar(
     title = "OpenVQA-Dashboard",
+    theme = theme,
     sidebar = bslib::sidebar(
       title = "Project source",
       width = 260,

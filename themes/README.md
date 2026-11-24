@@ -24,10 +24,14 @@ Change the named palette colours and their semantic roles (`primary`, `success`,
 Keep text and links readable against their backgrounds. The title bar uses
 `primary`, with automatically contrasting text. Fonts and logos are optional;
 the example uses system fonts and no external assets.
-The sidebar and section headers use Bootstrap's subtle primary colour; project
-names and borders use primary accents, and assessment badges use secondary.
-These styles use bslib theme settings and Bootstrap utilities, so they follow
-any selected colourway without custom colour CSS.
+The sidebar and section headers use Bootstrap's subtle primary colour. Project
+cards use Bootstrap action-item colours; assessment footer strips use subtle secondary
+backgrounds and secondary emphasis text, changing to primary on hover or focus.
+Customise these through `defaults.bootstrap.defaults` in the theme file using
+`list-group-hover-bg`, `list-group-action-hover-color`, `secondary-bg-subtle`
+and `secondary-text-emphasis`. One scoped Sass extension applies Bootstrap's
+primary colour utility to the strip when its parent button is hovered or focused;
+the remaining interaction styles come from Bootstrap itself.
 
 Organisation-specific themes should stay local. `themes/Teck.yml` and
 `config.yaml` are ignored by Git; add any other private theme filenames to

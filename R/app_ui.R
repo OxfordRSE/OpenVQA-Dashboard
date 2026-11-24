@@ -15,6 +15,13 @@ app_ui <- function(request, theme_file = NULL) {
     "navbar-bg" = unname(colours["primary"]),
     "bslib-sidebar-bg" = unname(colours["primary-bg-subtle"])
   )
+  # Bootstrap cannot coordinate a child strip with its parent's hover/focus state.
+  theme <- bslib::bs_add_rules(theme, "
+    .project-card-control:hover .project-card-meta,
+    .project-card-control:focus .project-card-meta {
+      @extend .text-bg-primary;
+    }
+  ")
 
   bslib::page_sidebar(
     title = "OpenVQA-Dashboard",
@@ -34,7 +41,7 @@ app_ui <- function(request, theme_file = NULL) {
         shiny::uiOutput("backend_status")
       )
     ),
-    # Only square geometry needs custom CSS; colours and focus use Bootstrap utilities.
+    # Keep square geometry; Bootstrap handles the action button's hover and focus.
     shiny::tags$head(shiny::tags$style(shiny::HTML("
       .project-card { aspect-ratio: 1 / 1; min-width: 0; min-height: 0; }
       .project-card-control {
@@ -74,17 +81,31 @@ project_cards <- function(projects) {
     count <- length(project$assessments)
     assessments <- paste(count, if (count == 1L) "assessment" else "assessments")
     bslib::card(
-      class = "project-card border-primary-subtle", fill = FALSE,
+      class = "project-card list-group", fill = FALSE,
       bslib::card_body(
-        class = "justify-content-between",
-        shiny::tags$h3(project$name, class = "h5 text-break text-primary"),
-        shiny::p(assessments, class = "badge text-bg-secondary fw-normal align-self-start mb-0"),
-        # Cover the card while retaining Shiny's native button binding and keyboard behaviour.
+        padding = 0,
+        # Put content inside the native button so Bootstrap's hover colours are inherited.
         shiny::actionButton(
-          inputId = id, label = NULL,
+          inputId = id,
+          label = shiny::tags$span(
+            class = "d-flex flex-column",
+            shiny::tags$span(
+              project$name,
+              role = "heading", `aria-level` = "3",
+              class = "h5 text-reset text-break p-3 pb-5 mb-0"
+            ),
+            shiny::tags$span(
+              assessments,
+              class = paste(
+                "project-card-meta bg-secondary-subtle text-secondary-emphasis",
+                "position-absolute bottom-0 start-0 fw-normal w-100 px-3 py-1 small"
+              )
+            )
+          ),
           class = paste(
             "project-card-control position-absolute top-0 start-0 w-100 h-100 border-0",
-            "bg-transparent focus-ring focus-ring-primary"
+            "list-group-item list-group-item-action d-flex flex-column p-0 text-start",
+            "focus-ring focus-ring-primary"
           ),
           `aria-label` = paste("Select project", project$name, "with", assessments)
         )

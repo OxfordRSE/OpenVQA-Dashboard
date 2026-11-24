@@ -37,6 +37,21 @@ and lintr's checks with a 100-character line limit through pre-commit. Styler
 owns indentation; lintr's indentation check is disabled to avoid conflicting
 rules. Generated files under `rv/` are excluded.
 
+### Branding and visual styling
+
+- Use the configured brand YAML through `bslib::bs_theme(brand = ...)` as the
+  source of colours, fonts and other brand settings. Keep organisation-specific
+  palettes in ignored local theme files, never in application code.
+- Use bslib/Shiny component arguments, supported `bs_theme()`/`bs_theme_update()`
+  Sass settings and Bootstrap utility classes for visual styling. Let the
+  framework derive subtle colours and contrasting foregrounds from the theme.
+- Do not add custom CSS rules, inline colour styles, `bs_add_rules()` overrides
+  or manually set CSS custom properties for branding when the framework offers
+  a supported setting or utility. Inspect the installed API before adding CSS.
+- Reserve custom CSS for layout or interactions the framework cannot express;
+  explain why it is needed. Preserve keyboard focus and readable contrast, and
+  verify changes with both the neutral and local colourways.
+
 ### Comments and function documentation
 
 - Add concise comments to new or changed code where the reason for a decision

@@ -24,4 +24,5 @@ dependencies = [
     "styler",
     "lintr",
     "pkgload",
+    "brand.yml",
 ]

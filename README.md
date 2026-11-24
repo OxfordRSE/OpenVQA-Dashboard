@@ -44,6 +44,7 @@ The user template contains the settings that vary between installations:
 default:
   openvqa_dir: null
   projects_dir: null
+  theme_file: "themes/default.yml"
 
 development:
   openvqa_dir: "../OpenVQA"
@@ -134,14 +135,30 @@ hidden and backup folders. Symlinks that lead outside the collection are
 excluded. Server selections accept catalogue IDs, recheck selected directories
 and reject paths outside the collection.
 
-The welcome page currently reports setup instructions, unavailable paths, an
-empty collection, or the discovered project count. Unreadable collection
-directories produce an unavailable status rather than an empty result. After
-changing settings or project folders, reload the app (restart after editing
-settings). Project cards and assessment navigation are planned for later phases.
+The homepage shows projects as square bslib cards in a responsive grid. Each card
+uses the folder name and assessment count; long names wrap. Select a card by
+clicking it or using Tab followed by Enter or Space. Selection is confirmed above
+the grid and belongs to the current browser session. Assessment navigation is
+planned for phase 3.
+
+The sidebar shows the configured local collection path, R and dashboard versions,
+and backend connectivity/version information. Setup instructions, unavailable
+paths and empty collections are reported separately from a successful list.
+Unreadable collection directories produce an unavailable status rather than an
+empty result. After changing settings or project folders, reload the app (restart
+after editing settings). Validation and analysis indicators are deferred until
+those operations are implemented; card selection only selects the project.
 Listing does not write to the backend or project data, validate scientific
 inputs, or run analyses. Scientific settings remain in OpenVQA's `params.yaml`.
 For a hosted dashboard, the server administrator supplies the configuration.
+
+## Colours and local branding
+
+Theme files live in [`themes/`](themes/README.md), separate from application
+settings. The configuration template selects `theme_file: "themes/default.yml"`.
+Choose any theme filename through `theme_file` in your local `config.yaml`;
+paths resolve relative to that settings file. Use null for Bootstrap defaults.
+See the [theme guide](themes/README.md) for customisation and installed-package usage.
 
 ## Style and lint
 

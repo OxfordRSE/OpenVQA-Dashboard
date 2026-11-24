@@ -10,7 +10,7 @@ run_app <- function(options = list(), config_file = "config.yaml") {
 
   golem::with_golem_options(
     app = shiny::shinyApp(
-      ui = app_ui,
+      ui = function(request) app_ui(request, theme_file = settings$theme_file),
       server = app_server,
       options = settings$shiny
     ),

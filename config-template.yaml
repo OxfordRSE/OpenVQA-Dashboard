@@ -4,6 +4,7 @@ default:
   # Relative paths resolve from this settings file's directory.
   openvqa_dir: null
   projects_dir: null
+  theme_file: "themes/default.yml" # Optional; set to null to disable all themes.
 
 # Example installation paths: replace these for your machine or server.
 development:

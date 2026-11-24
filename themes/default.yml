@@ -1,0 +1,28 @@
+# Neutral starting point: copy with your own filename and select it in config.yaml.
+# Specification: https://posit-dev.github.io/brand-yml/
+# Quote hex values: YAML otherwise treats # as a comment.
+meta:
+  name: OpenVQA Dashboard
+
+color:
+  palette:
+    white: "#FFFFFF"
+    charcoal: "#212529"
+    blue: "#0D6EFD"
+    slate: "#6C757D"
+    green: "#198754"
+    cyan: "#0DCAF0"
+    amber: "#FFC107"
+    red: "#DC3545"
+  background: white
+  foreground: charcoal
+  primary: blue
+  secondary: slate
+  success: green
+  info: cyan
+  warning: amber
+  danger: red
+
+typography:
+  link:
+    color: blue

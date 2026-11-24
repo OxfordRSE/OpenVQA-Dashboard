@@ -6,6 +6,7 @@ Description: A Shiny interface for configuring OpenVQA analyses and exploring
     their results.
 Encoding: UTF-8
 Imports:
+    brand.yml,
     bslib,
     config,
     golem,

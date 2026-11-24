@@ -6,6 +6,7 @@ testthat::test_that("user settings inherit bundled application defaults", {
   testthat::expect_equal(settings$shiny$host, "127.0.0.1")
   testthat::expect_null(settings$openvqa_dir)
   testthat::expect_null(settings$projects_dir)
+  testthat::expect_null(settings$theme_file)
   testthat::expect_equal(readLines(path), original)
 })
 
@@ -116,12 +117,32 @@ testthat::test_that("installation paths resolve from the config file without cha
 
 testthat::test_that("both installation settings reject malformed values", {
   path <- local_config_file()
-  for (field in c("openvqa_dir", "projects_dir")) {
+  for (field in c("openvqa_dir", "projects_dir", "theme_file")) {
     for (value in c("false", "42", "''", "'   '", "[one, two]", ".na")) {
       writeLines(c("default:", paste0("  ", field, ": ", value)), path)
       testthat::expect_error(read_app_config(config_file = path), field)
     }
   }
+})
+
+testthat::test_that("theme paths resolve from settings and support profile null overrides", {
+  path <- local_config_file()
+  theme <- file.path(dirname(path), "Custom.yml")
+  writeLines('color: {primary: "#123456"}', theme)
+  withr::defer(unlink(theme))
+  writeLines(c(
+    "default:", "  theme_file: Custom.yml",
+    "development:", "  theme_file: null"
+  ), path)
+  withr::local_dir(withr::local_tempdir())
+  testthat::expect_equal(
+    read_app_config(config_file = path)$theme_file,
+    file.path(dirname(normalizePath(path, winslash = "/")), "Custom.yml")
+  )
+  unlink(theme)
+  testthat::expect_error(read_app_config(config_file = path), "theme_file.*readable")
+  withr::local_envvar(R_CONFIG_ACTIVE = "development")
+  testthat::expect_null(read_app_config(config_file = path)$theme_file)
 })
 
 testthat::test_that("absolute paths, home expansion and profile null overrides are respected", {

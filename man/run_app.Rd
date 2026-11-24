@@ -15,6 +15,8 @@ run_app(options = list(), config_file = "config.yaml")
   a \code{default} profile; \env{R_CONFIG_ACTIVE} selects another profile
   that inherits from it. The optional \code{openvqa_dir} and \code{projects_dir}
   settings identify the backend checkout and project collection respectively.
+  The optional \code{theme_file} selects a brand YAML file with any filename;
+  null disables branding. A configured theme file must exist and be readable.
   Relative installation paths resolve against this file's directory without
   changing the process working directory; absolute paths and \code{~} are supported.}
 }

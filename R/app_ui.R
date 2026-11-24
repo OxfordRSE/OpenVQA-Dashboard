@@ -9,6 +9,13 @@ app_ui <- function(request, theme_file = NULL) {
   # Explicit selection prevents an unrelated ancestor brand from affecting the app.
   brand <- if (is.null(theme_file)) FALSE else theme_file
   theme <- bslib::bs_theme(brand = brand)
+  colours <- bslib::bs_get_variables(theme, c("primary", "primary-bg-subtle"))
+  # Resolve brand colours before setting component defaults; bslib handles contrast.
+  theme <- bslib::bs_theme_update(
+    theme,
+    "navbar-bg" = unname(colours["primary"]),
+    "bslib-sidebar-bg" = unname(colours["primary-bg-subtle"])
+  )
 
   bslib::page_sidebar(
     title = "OpenVQA-Dashboard",
@@ -18,10 +25,10 @@ app_ui <- function(request, theme_file = NULL) {
       width = 260,
       fillable = TRUE,
       open = list(desktop = "open", mobile = "closed"),
-      shiny::p("Local filesystem", class = "text-body-secondary mb-0"),
+      shiny::p("Local filesystem", class = "mb-0"),
       shiny::tags$div(class = "text-break", shiny::textOutput("projects_source")),
       shiny::tags$div(
-        class = "mt-auto pt-4 small text-body-secondary",
+        class = "mt-auto pt-4 small",
         shiny::tags$h2("Versions", class = "h6 text-body"),
         shiny::p(paste0("R: v", getRversion()), class = "mb-1"),
         shiny::p(paste0("Dashboard: v", dashboard_version), class = "mb-1"),
@@ -40,12 +47,15 @@ app_ui <- function(request, theme_file = NULL) {
       }
     "))),
     bslib::card(
-      bslib::card_header(shiny::tags$h2("Projects", class = "h5 mb-0")),
+      bslib::card_header(
+        class = "bg-primary-subtle text-primary-emphasis",
+        shiny::tags$h2("Projects", class = "h5 mb-0")
+      ),
       bslib::card_body(
         fillable = FALSE,
         shiny::tags$div(role = "status", shiny::textOutput("projects_status")),
         shiny::tags$div(
-          role = "status", class = "text-body-secondary small mb-3",
+          role = "status", class = "text-body small mb-3",
           shiny::textOutput("selection_status")
         ),
         shiny::uiOutput("project_cards")

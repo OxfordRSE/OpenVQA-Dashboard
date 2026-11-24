@@ -6,6 +6,7 @@
 
 # Local dashboard settings
 /config.yaml
+/themes/Teck.yml # ignore here since OpenVQA-Dashboard will be frequently used by Teck
 
 # R package build artifacts
 /openvqadashboard_*.tar.gz

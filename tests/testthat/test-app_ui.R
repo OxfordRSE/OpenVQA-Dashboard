@@ -17,6 +17,8 @@ testthat::test_that("project cards use bslib layout and labelled buttons with ca
   testthat::expect_match(html, 'id="project_1"', fixed = TRUE)
   testthat::expect_match(html, 'id="project_2"', fixed = TRUE)
   testthat::expect_match(html, "action-button", fixed = TRUE)
+  testthat::expect_match(html, "badge text-bg-secondary fw-normal", fixed = TRUE)
+  testthat::expect_match(html, "focus-ring focus-ring-primary", fixed = TRUE)
   testthat::expect_match(html, 'type="button"', fixed = TRUE)
   testthat::expect_match(html, "Select project a_project with 2 assessments", fixed = TRUE)
   testthat::expect_match(html, "Select project z_project with 1 assessment", fixed = TRUE)

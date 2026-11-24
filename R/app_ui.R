@@ -5,7 +5,6 @@ app_ui <- function(request, theme_file = NULL) {
     description <- "DESCRIPTION"
   }
   dashboard_version <- read.dcf(description, fields = "Version")[[1]]
-
   # Explicit selection prevents an unrelated ancestor brand from affecting the app.
   brand <- if (is.null(theme_file)) FALSE else theme_file
   theme <- bslib::bs_theme(brand = brand)
@@ -35,15 +34,11 @@ app_ui <- function(request, theme_file = NULL) {
         shiny::uiOutput("backend_status")
       )
     ),
-    # Keep Bootstrap's theme; custom rules only control card geometry and interaction.
+    # Only square geometry needs custom CSS; colours and focus use Bootstrap utilities.
     shiny::tags$head(shiny::tags$style(shiny::HTML("
       .project-card { aspect-ratio: 1 / 1; min-width: 0; min-height: 0; }
       .project-card-control {
-        border-radius: inherit; background: transparent;
-      }
-      .project-card-control:hover { background: rgba(var(--bs-primary-rgb), 0.06); }
-      .project-card-control:focus-visible {
-        outline: 3px solid var(--bs-primary); outline-offset: -5px;
+        border-radius: inherit;
       }
     "))),
     bslib::card(
@@ -79,15 +74,18 @@ project_cards <- function(projects) {
     count <- length(project$assessments)
     assessments <- paste(count, if (count == 1L) "assessment" else "assessments")
     bslib::card(
-      class = "project-card", fill = FALSE,
+      class = "project-card border-primary-subtle", fill = FALSE,
       bslib::card_body(
         class = "justify-content-between",
-        shiny::tags$h3(project$name, class = "h5 text-break"),
-        shiny::p(assessments, class = "text-body-secondary mb-0"),
+        shiny::tags$h3(project$name, class = "h5 text-break text-primary"),
+        shiny::p(assessments, class = "badge text-bg-secondary fw-normal align-self-start mb-0"),
         # Cover the card while retaining Shiny's native button binding and keyboard behaviour.
         shiny::actionButton(
           inputId = id, label = NULL,
-          class = "project-card-control position-absolute top-0 start-0 w-100 h-100 border-0",
+          class = paste(
+            "project-card-control position-absolute top-0 start-0 w-100 h-100 border-0",
+            "bg-transparent focus-ring focus-ring-primary"
+          ),
           `aria-label` = paste("Select project", project$name, "with", assessments)
         )
       )

@@ -38,7 +38,7 @@ read_app_config <- function(config_file = "config.yaml", options = list()) {
   }
   # Anchor paths to the selected file so launching from another directory is predictable.
   config_dir <- dirname(normalizePath(config_file, winslash = "/", mustWork = TRUE))
-  for (field in c("openvqa_dir", "projects_dir")) {
+  for (field in c("openvqa_dir", "projects_dir", "theme_file")) {
     path <- settings[[field]]
     if (is.null(path)) {
       next
@@ -51,6 +51,10 @@ read_app_config <- function(config_file = "config.yaml", options = list()) {
       path <- file.path(config_dir, path)
     }
     settings[[field]] <- path
+  }
+  if (!is.null(settings$theme_file) &&
+    (!file_test("-f", settings$theme_file) || file.access(settings$theme_file, 4) != 0L)) {
+    stop("theme_file must point to a readable YAML file, or be null.", call. = FALSE)
   }
 
   settings$shiny <- options

@@ -1,5 +1,6 @@
 # Shared application defaults. Put installation-specific overrides in config.yaml.
 default:
+  theme_file: null # Disables all themes
   shiny:
     host: "127.0.0.1"
     port: 8000

@@ -44,6 +44,7 @@ The user template contains the settings that vary between installations:
 default:
   openvqa_dir: null
   projects_dir: null
+  theme_file: "themes/default.yml"
 
 development:
   openvqa_dir: "../OpenVQA"
@@ -150,6 +151,14 @@ those operations are implemented; card selection only selects the project.
 Listing does not write to the backend or project data, validate scientific
 inputs, or run analyses. Scientific settings remain in OpenVQA's `params.yaml`.
 For a hosted dashboard, the server administrator supplies the configuration.
+
+## Colours and local branding
+
+Theme files live in [`themes/`](themes/README.md), separate from application
+settings. The configuration template selects `theme_file: "themes/default.yml"`.
+Choose any theme filename through `theme_file` in your local `config.yaml`;
+paths resolve relative to that settings file. Use null for Bootstrap defaults.
+See the [theme guide](themes/README.md) for customisation and installed-package usage.
 
 ## Style and lint
 

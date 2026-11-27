@@ -71,6 +71,14 @@ app_server <- function(input, output, session) {
     selected_assessment_id(NULL)
     selected_project_id(NULL)
   })
+  shiny::observeEvent(input$project_overview, {
+    shiny::req(selected_project_id())
+    selected_assessment_id(NULL)
+    # Clear the browser's radio selection as well as the server's assessment state.
+    shiny::updateRadioButtons(session, paste0(selected_project_id(), "_assessment"),
+      selected = character(0)
+    )
+  })
   shiny::observe({
     bslib::nav_select("project_view",
       selected = if (is.null(selected_project_id())) "projects" else "assessments"
@@ -87,6 +95,9 @@ app_server <- function(input, output, session) {
           project <- selected_project()
           shiny::tagList(
             shiny::tags$h2(project$name, class = "h5 text-break"),
+            shiny::actionButton("project_overview", "Project overview",
+              class = "btn-outline-primary mb-3"
+            ),
             shiny::tags$div(
               class = "text-break",
               shiny::radioButtons(

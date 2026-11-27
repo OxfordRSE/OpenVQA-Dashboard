@@ -27,12 +27,16 @@ app_ui <- function(request, theme_file = NULL) {
     title = "OpenVQA-Dashboard",
     theme = theme,
     sidebar = bslib::sidebar(
-      title = "Project source",
       width = 260,
       fillable = TRUE,
       open = list(desktop = "open", mobile = "closed"),
-      shiny::p("Local filesystem", class = "mb-0"),
-      shiny::tags$div(class = "text-break", shiny::textOutput("projects_source")),
+      shiny::uiOutput("project_navigation"),
+      shiny::tags$div(
+        class = "small text-break",
+        shiny::tags$h2("Project source", class = "h6"),
+        shiny::p("Local filesystem", class = "mb-0"),
+        shiny::textOutput("projects_source")
+      ),
       shiny::tags$div(
         class = "mt-auto pt-4 small",
         shiny::tags$h2("Versions", class = "h6 text-body"),
@@ -48,21 +52,48 @@ app_ui <- function(request, theme_file = NULL) {
         border-radius: inherit;
       }
     "))),
-    bslib::card(
-      bslib::card_header(
-        class = "bg-primary-subtle text-primary-emphasis",
-        shiny::tags$h2("Projects", class = "h5 mb-0")
+    # Hidden navigation needs fill roles on its containers to retain the full-height workspace.
+    bslib::navset_hidden(
+      id = "project_view",
+      bslib::nav_panel(
+        "Projects",
+        value = "projects",
+        bslib::card(
+          bslib::card_header(
+            class = "bg-primary-subtle text-primary-emphasis",
+            shiny::tags$h2("Projects", class = "h5 mb-0")
+          ),
+          bslib::card_body(
+            fillable = FALSE,
+            shiny::tags$div(role = "status", shiny::textOutput("projects_status")),
+            shiny::tags$div(
+              role = "status", class = "text-body small mb-3",
+              shiny::textOutput("selection_status")
+            ),
+            shiny::uiOutput("project_cards")
+          )
+        )
       ),
-      bslib::card_body(
-        fillable = FALSE,
-        shiny::tags$div(role = "status", shiny::textOutput("projects_status")),
-        shiny::tags$div(
-          role = "status", class = "text-body small mb-3",
-          shiny::textOutput("selection_status")
-        ),
-        shiny::uiOutput("project_cards")
+      bslib::nav_panel(
+        "Assessments",
+        value = "assessments",
+        bslib::card(
+          bslib::card_header(
+            class = "bg-primary-subtle text-primary-emphasis",
+            shiny::tags$h2(shiny::textOutput("assessment_title", inline = TRUE),
+              class = "h5 mb-0 text-break"
+            )
+          ),
+          bslib::card_body(
+            fillable = FALSE,
+            shiny::tags$div(role = "status", shiny::textOutput("assessment_status"))
+          )
+        )
       )
-    )
+    ) |>
+      bslib::as_fill_carrier() |>
+      bslib::as_fill_carrier(css_selector = ".tab-content") |>
+      bslib::as_fill_carrier(css_selector = ".tab-pane")
   )
 }
 

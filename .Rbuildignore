@@ -5,6 +5,8 @@
 ^dev$
 ^AGENTS\.md$
 ^README\.md$
+^CONTRIBUTING\.md$
+^output$
 ^config\.yaml$
 ^themes$
 ^config-template\.yaml$

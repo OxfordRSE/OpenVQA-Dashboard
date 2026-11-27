@@ -29,9 +29,7 @@ and run `Rscript dev/run_dev.R`. If you configured a named profile, select it:
 R_CONFIG_ACTIVE=development Rscript dev/run_dev.R
 ```
 
-Open the URL printed by Shiny, normally `http://127.0.0.1:8000`. Stop the server
-with Ctrl+C. Open a project card, choose an assessment in the sidebar and use
-**Back to projects** to return to the grid.
+Open the URL printed by Shiny, normally `http://127.0.0.1:8000`. Stop the server with Ctrl+C.
 
 ## Guides
 

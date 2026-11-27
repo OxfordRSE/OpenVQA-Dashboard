@@ -158,3 +158,26 @@ testthat::test_that("removed assessment inputs show an error and allow navigatio
     testthat::expect_equal(output$selection_status, "Select a project.")
   })
 })
+
+testthat::test_that("project overview clears an assessment without leaving its project", {
+  root <- local_project_collection()
+  shiny::testServer(app_server, {
+    shiny::shinyOptions(golem_options = list(projects_dir = root))
+    session$setInputs(project_1 = 1)
+    project <- selected_project()
+    testthat::expect_match(output$project_navigation$html, "Project overview", fixed = TRUE)
+    for (visit in 1:2) {
+      session$setInputs(project_1_assessment = "assessment_2")
+      testthat::expect_equal(selected_assessment()$name, "same")
+      session$setInputs(project_overview = visit)
+      testthat::expect_equal(selected_project(), project)
+      testthat::expect_null(selected_assessment())
+      testthat::expect_equal(output$assessment_title, "a_project")
+      testthat::expect_equal(output$assessment_status, "Select an assessment from the sidebar.")
+      # The browser reports NULL after the radio group is cleared.
+      session$setInputs(project_1_assessment = NULL)
+    }
+    session$setInputs(project_1_assessment = "assessment_2")
+    testthat::expect_equal(output$assessment_title, "a_project - same")
+  })
+})

@@ -87,6 +87,11 @@ launch the app and inspect the affected controls and outputs. When analysis
 integration is added, test validation and error handling with small example
 inputs; keep scientific correctness tests in OpenVQA.
 
+Stop every test or development server you start when verification is finished,
+including alternate-port and neutral-theme previews, and verify its port is
+released. Normal previews must use the configured local theme; keep temporary
+theme overrides confined to their test processes and preserve `config.yaml`.
+
 ## Commit & Pull Request Guidelines
 
 There is no established commit history. Use concise imperative subjects,

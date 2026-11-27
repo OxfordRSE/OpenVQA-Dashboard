@@ -142,8 +142,9 @@ Symlinks escaping the collection are excluded; server selections are checked
 against the catalogue and current filesystem before use.
 
 Open a project card by clicking it or using Tab followed by Enter or Space.
-Choose an assessment from the sidebar's native radio controls. Back to projects
-returns to the grid; switching projects clears the assessment selection.
+Choose an assessment from the sidebar's native radio controls. Project overview
+clears that selection while keeping the project open. Back to projects returns
+to the grid; switching projects also clears the assessment selection.
 Selections belong to the current browser session. The sidebar also shows the
 collection path, software versions and backend connectivity.
 

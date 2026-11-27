@@ -6,6 +6,10 @@ testthat::test_that("the homepage uses a bslib sidebar with source and version i
   testthat::expect_match(html, paste0("R: v", getRversion()), fixed = TRUE)
   testthat::expect_match(html, "Dashboard: v", fixed = TRUE)
   testthat::expect_match(html, 'data-open-mobile="closed"', fixed = TRUE)
+  testthat::expect_match(html, 'id="project_navigation"', fixed = TRUE)
+  testthat::expect_match(html, 'id="project_view"', fixed = TRUE)
+  testthat::expect_match(html, 'data-value="assessments"', fixed = TRUE)
+  testthat::expect_match(html, 'id="assessment_title"', fixed = TRUE)
   testthat::expect_match(html, "bg-primary-subtle text-primary-emphasis", fixed = TRUE)
 })
 
